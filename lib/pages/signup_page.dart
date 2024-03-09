@@ -71,33 +71,41 @@ class _SignupPageState extends State<SignupPage> {
                     label: 'Name',
                     icon: Icons.person_outline,
                     controller: textName,
+                    errorText: '',
+                    isValidated: true,
                   ),
                   const SizedBox(height: 16),
                   Input(
                     label: 'Gmail',
                     icon: Icons.alternate_email,
                     controller: textGmail,
+                    isValidated: true,
+                    errorText: '',
                   ),
                   const SizedBox(height: 16),
                   Password(
-                      label: 'Password',
-                      obscureText: obscureText,
-                      onPressed: () {
-                        setState(() {
-                          obscureText = !obscureText;
-                        });
-                      },
-                      controller: textPassword),
+                    label: 'Password',
+                    obscureText: obscureText,
+                    onPressed: () {
+                      setState(() {
+                        obscureText = !obscureText;
+                      });
+                    },
+                    controller: textPassword,
+                    isValidated: true, errorText: '',
+                  ),
                   const SizedBox(height: 16),
                   Password(
-                      label: 'Re-Password',
-                      obscureText: re_obscureText,
-                      onPressed: () {
-                        setState(() {
-                          re_obscureText = !re_obscureText;
-                        });
-                      },
-                      controller: textRePassword),
+                    label: 'Re-Password',
+                    obscureText: re_obscureText,
+                    onPressed: () {
+                      setState(() {
+                        re_obscureText = !re_obscureText;
+                      });
+                    },
+                    controller: textRePassword,
+                    isValidated: true, errorText: '',
+                  ),
                   const SizedBox(height: 16),
                   Align(
                     alignment: Alignment.centerLeft,

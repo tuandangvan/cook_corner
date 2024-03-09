@@ -1,8 +1,10 @@
 import 'package:cooks_corner/models/recipe.dart';
+import 'package:cooks_corner/pages/signin_page.dart';
 import 'package:cooks_corner/theme.dart';
 import 'package:cooks_corner/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -51,6 +53,11 @@ class _ProfilePageState extends State<ProfilePage>
     _tabController = TabController(length: 4, vsync: this);
   }
 
+  Future<void> forgetLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('isLoggedIn');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +88,15 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                         )),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        await forgetLogin();
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SigninPage()),
+                        );
+                      },
                       child: Image.asset("assets/images/filter-svgrepo-com.png",
                           width: 24, height: 24),
                     ),

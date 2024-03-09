@@ -2,17 +2,34 @@ import 'package:cooks_corner/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Input extends StatelessWidget {
-  const Input({
+// ignore: must_be_immutable
+class Input extends StatefulWidget {
+  Input({
     Key? key,
     required this.label,
     required this.icon,
     required this.controller,
+    required this.isValidated,
+    required this.errorText,
+    this.onChanged,
   }) : super(key: key);
 
   final String label;
   final IconData icon;
   final TextEditingController controller;
+  bool isValidated;
+  final String errorText;
+  final VoidCallbackAction? onChanged;
+
+  @override
+  State<Input> createState() => _InputState();
+}
+
+class _InputState extends State<Input> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,33 +40,39 @@ class Input extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(left: 0),
-            child: Text(label,
+            child: Text(widget.label,
                 style: GoogleFonts.poppins(
                   textStyle:
                       const TextStyle(fontSize: 16, color: AppColors.primary),
                 )),
           ),
           SizedBox(
-            height: 42,
+            height: 65,
             child: TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  widget.isValidated = true;
+                });
+              },
               maxLines: 1,
               minLines: 1,
               expands: false,
-              controller: controller,
+              controller: widget.controller,
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.only(left: 19, top: 9),
                 suffixStyle:
                     const TextStyle(fontSize: 14, color: AppColors.textFaded),
-                suffixIcon: Icon(icon),
+                suffixIcon: Icon(widget.icon),
                 suffixIconColor: AppColors.textFaded,
                 fillColor: AppColors.inputBackground,
-                hintText: 'Enter your $label',
+                hintText: 'Enter your ${widget.label}',
                 hintStyle:
                     const TextStyle(fontSize: 14, color: AppColors.textFaded),
                 filled: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(42),
                 ),
+                errorText: widget.isValidated ? null : widget.errorText,
               ),
             ),
           ),
@@ -59,19 +82,24 @@ class Input extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class Password extends StatefulWidget {
-  const Password({
+  Password({
     Key? key,
     required this.label,
     required this.obscureText,
     required this.onPressed,
     required this.controller,
+    required this.isValidated,
+    required this.errorText,
   }) : super(key: key);
 
   final String label;
   final bool obscureText;
   final VoidCallback? onPressed;
   final TextEditingController controller;
+  bool isValidated;
+  final String errorText;
 
   @override
   State<Password> createState() => _PasswordState();
@@ -99,12 +127,18 @@ class _PasswordState extends State<Password> {
                 )),
           ),
           SizedBox(
-            height: 42,
-            child: TextField(
+            height: 65,
+            child: TextFormField(
+              onChanged: (value) {
+                setState(() {
+                  widget.isValidated = true;
+                });
+              },
               controller: widget.controller,
               obscureText: widget.obscureText,
               obscuringCharacter: '*',
               decoration: InputDecoration(
+                
                 contentPadding: const EdgeInsets.only(left: 19, top: 9),
                 suffixStyle:
                     const TextStyle(fontSize: 14, color: AppColors.textFaded),
@@ -124,6 +158,7 @@ class _PasswordState extends State<Password> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(42),
                 ),
+                errorText: widget.isValidated ? null : widget.errorText,
               ),
             ),
           ),

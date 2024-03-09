@@ -4,6 +4,7 @@ import 'package:cooks_corner/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cooks_corner/widgets/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SigninPage extends StatefulWidget {
   const SigninPage({Key? key}) : super(key: key);
@@ -15,11 +16,23 @@ class SigninPage extends StatefulWidget {
 class _SigninPageState extends State<SigninPage> {
   TextEditingController textGmail = TextEditingController();
   TextEditingController textPassword = TextEditingController();
+  bool validateGmail = true;
+  String? errorGmail = "";
+  bool validatePassword = true;
 
   bool obscureText = true;
+
+  String? errorPassword = '';
+
+  bool _isChecked = false;
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<void> rememberLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', true);
   }
 
   @override
@@ -69,18 +82,53 @@ class _SigninPageState extends State<SigninPage> {
                     label: 'Gmail',
                     icon: Icons.alternate_email,
                     controller: textGmail,
+                    isValidated: validateGmail,
+                    errorText: errorGmail!,
                   ),
                   const SizedBox(height: 16),
                   Password(
-                      label: 'Password',
-                      obscureText: obscureText,
-                      onPressed: () {
-                        setState(() {
-                          obscureText = !obscureText;
-                        });
-                      },
-                      controller: textPassword),
+                    label: 'Password',
+                    obscureText: obscureText,
+                    onPressed: () {
+                      setState(() {
+                        obscureText = !obscureText;
+                      });
+                    },
+                    controller: textPassword,
+                    isValidated: validatePassword,
+                    errorText: errorPassword!,
+                  ),
                   const SizedBox(height: 16),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Container(
+                          height: 13.5,
+                          width: 13.5,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColors.textColor,
+                            ),
+                          ),
+                          child: Checkbox(
+                            activeColor: Colors.transparent,
+                            checkColor: AppColors.textColor,
+                            value: _isChecked,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                _isChecked = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        const Text(
+                          '  Remember Sign in',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
@@ -99,11 +147,36 @@ class _SigninPageState extends State<SigninPage> {
                     height: 39,
                     width: 353,
                     child: TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HomeScreen()));
+                      onPressed: () async {
+                        setState(() {
+                          validateGmail = textGmail.text.isNotEmpty;
+                          validatePassword = textPassword.text.isNotEmpty;
+                          errorGmail = validateGmail ? "" : "Gmail is required";
+                          errorPassword =
+                              validatePassword ? "" : "Password is required";
+                        });
+
+                        if (validateGmail && validatePassword) {
+                          Pattern pattern =
+                              r'^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$';
+                          RegExp regex = RegExp(pattern.toString());
+
+                          if (!regex.hasMatch(textGmail.text)) {
+                            setState(() {
+                              validateGmail = false;
+                              errorGmail = "Please enter a valid Gmail address";
+                            });
+                          } else {
+                            if (_isChecked) {
+                              await rememberLogin();
+                            }
+
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()));
+                          }
+                        }
                       },
                       style: TextButton.styleFrom(
                         backgroundColor: AppColors.primary,
