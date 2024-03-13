@@ -151,14 +151,14 @@ class _SigninPageState extends State<SigninPage> {
                         setState(() {
                           validateGmail = textGmail.text.isNotEmpty;
                           validatePassword = textPassword.text.isNotEmpty;
-                          errorGmail = validateGmail ? "" : "Gmail is required";
+                          errorGmail = validateGmail ? "" : "Please enter email";
                           errorPassword =
-                              validatePassword ? "" : "Password is required";
+                              validatePassword ? "" : "Please enter password";
                         });
 
-                        if (validateGmail && validatePassword) {
+                        if (validateGmail && validatePassword || validateGmail) {
                           Pattern pattern =
-                              r'^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$';
+                              r'^[a-z0-9]{3,}@g(oogle)?mail\.com$';
                           RegExp regex = RegExp(pattern.toString());
 
                           if (!regex.hasMatch(textGmail.text)) {

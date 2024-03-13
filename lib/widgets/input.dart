@@ -18,7 +18,7 @@ class Input extends StatefulWidget {
   final IconData icon;
   final TextEditingController controller;
   bool isValidated;
-  final String errorText;
+  String errorText;
   final VoidCallbackAction? onChanged;
 
   @override
@@ -52,6 +52,7 @@ class _InputState extends State<Input> {
               onChanged: (value) {
                 setState(() {
                   widget.isValidated = true;
+                  widget.errorText = '';
                 });
               },
               maxLines: 1,
@@ -99,7 +100,7 @@ class Password extends StatefulWidget {
   final VoidCallback? onPressed;
   final TextEditingController controller;
   bool isValidated;
-  final String errorText;
+  String errorText;
 
   @override
   State<Password> createState() => _PasswordState();
@@ -132,6 +133,7 @@ class _PasswordState extends State<Password> {
               onChanged: (value) {
                 setState(() {
                   widget.isValidated = true;
+                  widget.errorText = '';
                 });
               },
               controller: widget.controller,
